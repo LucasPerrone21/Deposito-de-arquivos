@@ -1,0 +1,1 @@
+Essa pasta é a que vai salvar as pastas criadas pelos servidores ou seja, ou seja, não apague ela, se não a aplicação não funcionará

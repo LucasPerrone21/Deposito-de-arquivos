@@ -14,9 +14,24 @@ def envio(endereco_arquivo):
     with open(endereco_arquivo, 'rb') as arquivo:
         dados = arquivo.read()
         cliente.sendall(dados)
-        
+    print('Arquivo enviado para o servidor')
+    if cliente.recv(1024).decode('utf-8') == 'ack':
+        print('Fim do envio')
+        return True
 
-sg.theme('DarkAmber')
+def recvall(sock,buffer_size):
+    '''
+    Função que recebe os arquivos dos clientes e os armazena no servidor
+    '''
+    data = b''
+    while True:
+        part = sock.recv(buffer_size)
+        data += part
+        if len(part) < buffer_size:
+            break
+    return data    
+
+sg.theme('LightBlue6')
 
 # Criando o socket
 cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -43,7 +58,7 @@ while True:
 layout = [
     [sg.Text('Lista de arquivos depositados no servidor:')],
     [sg.Listbox(values=[], size=(30, 6), key='item_list')],
-    [sg.Button('Depositar'), sg.Button('Recuperar')]
+    [sg.Button('Depositar'), sg.Button('Recuperar'),sg.Button('Deletar'),  sg.Button('Editar Número de Cópias')]
 ]
 
 # Criando a janela
@@ -65,12 +80,45 @@ while True:
             namefile = caca_nome(endereco_arquivo)
             cliente.send(str(['Deposito', namefile ,n_copias]).encode())
             envio(endereco_arquivo)
-            cliente.send('ack'.encode())
-            
-                
+            itens_existentes = window['item_list'].Values
+            print(itens_existentes)
+            itens_existentes.append(namefile)
+            print(itens_existentes)
+            window['item_list'].update(values=itens_existentes)          
         except:
+            print('deu ruim')
             pass
     
     if event == 'Recuperar':
-        pass
+        selected_item = values['item_list'][0] if values['item_list'] else None
+        if selected_item:
+            cliente.send(str(['Recuperar', selected_item]).encode('utf-8'))
+            pasta = sg.popup_get_folder('Selecione a pasta onde deseja salvar o arquivo:')
+            with open (pasta+'/'+selected_item, 'wb') as arquivo:
+                dados = recvall(cliente, 1024)
+                arquivo.write(dados)
+            sg.popup_ok('Arquivo recuperado com sucesso!')
+    
+    if event == 'Editar Número de Cópias':
+        selected_item = values['item_list'][0] if values['item_list'] else None
+        if selected_item:
+            n_copias = int(sg.popup_get_text('Digite o novo número de cópias:'))
+            cliente.send(str(['EDC', selected_item, n_copias]).encode('utf-8'))
+            sg.popup_ok('Número de cópias atualizado com sucesso!')
+            if n_copias == 0:
+                itens_existentes = window['item_list'].Values
+                itens_existentes.remove(selected_item)
+                window['item_list'].update(values=itens_existentes)
+                print('tentei fazer o update')
+
+    if event == 'Deletar':
+        selected_item = values['item_list'][0] if values['item_list'] else None
+        if selected_item:
+            cliente.send(str(['Deletar', selected_item]).encode('utf-8'))
+            itens_existentes = window['item_list'].Values
+            print(itens_existentes)
+            itens_existentes.remove(selected_item)
+            window['item_list'].update(values=itens_existentes)
+            print('tentei fazer o update')
+            sg.popup_ok('Arquivo deletado com sucesso!')
 window.close()

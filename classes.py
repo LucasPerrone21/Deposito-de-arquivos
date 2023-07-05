@@ -7,9 +7,8 @@ class Cliente:
 
 
 class Arquivo:
-    def __init__(self, nome_arquivo, proprietario):
+    def __init__(self, nome_arquivo):
         self.nome_arquivo = nome_arquivo
-        self.proprietario = proprietario
         self.localizacao = []
 
 
