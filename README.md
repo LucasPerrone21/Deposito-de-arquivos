@@ -10,7 +10,7 @@
 ## Depósito de arquivos
 
 - Aperte em ```Depósitar```, digite o número de cópias a ser criado e selecione o caminho do arquivo **(Não possuo certeza por não ter como testar isso, mas acredito que não funcione em SOs diferentes do windows pois a forma de caminhar entre as pastas é diferente)**
-- Aguarde um tempo e pronto, seu arquivo foi enviado e agora ele está aparecendo na ````Lista de Arquivos```
+- Aguarde um tempo e pronto, seu arquivo foi enviado e agora ele está aparecendo na ```Lista de Arquivos```
 
 ## Recuperação de Arquivos
 
