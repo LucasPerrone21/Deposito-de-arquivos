@@ -58,7 +58,8 @@ while True:
 layout = [
     [sg.Text('Lista de arquivos depositados no servidor:')],
     [sg.Listbox(values=[], size=(30, 6), key='item_list')],
-    [sg.Button('Depositar'), sg.Button('Recuperar'),sg.Button('Deletar'),  sg.Button('Editar Número de Cópias')]
+    [sg.Button('Depositar'), sg.Button('Recuperar'),sg.Button('Deletar')],
+    [sg.Button('Editar Número de Cópias')]
 ]
 
 # Criando a janela
